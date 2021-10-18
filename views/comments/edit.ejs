@@ -13,6 +13,7 @@
     <form method="POST" action="http://localhost:3000/comments/<%= comment.id %>?_method=PATCH">
         <textarea name="comment" id="" cols="30" rows="10"><%= comment.comment %> </textarea><br>
         <input type="submit" value="Save">
+        <a href="http://localhost:3000/comments/<%=comment.id %> ">cancel</a>
     </form>
 
 </body>

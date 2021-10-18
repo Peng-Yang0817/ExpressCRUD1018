@@ -74,6 +74,10 @@ app.delete('/comments/:id', (req, res) => {
     comments = comments.filter(com => com.id !== id);
     res.redirect('/comments');
 })
+app.get('/', (req, res) => {
+    res.render('comments/homepage')
+})
+
 //use 就是該路徑被出發會就會執行的內容，記得後面要給予next不然網頁會卡在這
 app.use('/Chicken', (req, res, next) => {
     console.log('someone here!')
