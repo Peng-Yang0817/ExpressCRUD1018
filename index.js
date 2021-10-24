@@ -96,3 +96,28 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
     console.log(`The server is running => http://127.0.0.1:${port}`);
 })
+
+let mySQL = require('mysql');
+
+let connection = mySQL.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '1234',
+    database: 'connectlearn'
+});
+connection.connect(function (err) {
+    if (err) {
+        return console.error('error: ' + err.message);
+    }
+
+    console.log('Connected to the MySQL server.');
+});
+
+//connection.destroy();
+connection.end(function (err) {
+    if (err) {
+        return console.log('error:' + err.message);
+    }
+    console.log('Close the database connection.');
+});
+
