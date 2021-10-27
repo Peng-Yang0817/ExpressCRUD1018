@@ -90,34 +90,53 @@ app.post('/Chicken', (req, res) => {
     const { FirstName, LastName } = req.body;
     res.send(`Ok~!FirstName ${FirstName} and LastName ${LastName}`);
 })
-app.get('*', (req, res) => {
-    res.send('I can not find what you want -.-');
-})
+
 app.listen(port, () => {
     console.log(`The server is running => http://127.0.0.1:${port}`);
 })
 
 let mySQL = require('mysql');
 
-let connection = mySQL.createConnection({
-    host: 'localhost',
+const db = mySQL.createConnection({
+    host: '127.0.0.1',
     user: 'root',
     password: '1234',
-    database: 'connectlearn'
+    database: 'nodemysql'
 });
-connection.connect(function (err) {
+db.connect(function (err) {
     if (err) {
+        console.log('Connected error!! QQ');
         return console.error('error: ' + err.message);
     }
-
-    console.log('Connected to the MySQL server.');
+    console.log('Connected success');
 });
+
+app.get('/createdb', (req, res) => {
+    let sql = 'CREATE DATABASE nodemysql';
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.send('Database created...');
+    });
+})
+app.get('/createTabel', (req, res) => {
+    let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT,Name VARCHAR(50),Sex VARCHAR(10), PRIMARY KEY (id))';
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.send('posts table created...');
+    });
+})
 
 //connection.destroy();
-connection.end(function (err) {
-    if (err) {
-        return console.log('error:' + err.message);
-    }
-    console.log('Close the database connection.');
-});
+// db.end(function (err) {
+//     if (err) {
+//         console.log("Can't Close Connected Plz Try Again!! QQ");
+//         return console.log('error:' + err.message);
+//     }
+//     console.log('Close the database connection.');
+// });
 
+app.get('*', (req, res) => {
+    res.send('I can not find what you want -.-');
+})
