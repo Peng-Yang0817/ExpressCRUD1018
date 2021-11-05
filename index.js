@@ -96,11 +96,12 @@ app.listen(port, () => {
 })
 
 let mySQL = require('mysql');
+const { query } = require("express");
 
 const db = mySQL.createConnection({
     host: '127.0.0.1',
     user: 'root',
-    password: '1234',
+    password: 'root',
     database: 'nodemysql'
 });
 db.connect(function (err) {
@@ -119,7 +120,7 @@ app.get('/createdb', (req, res) => {
         res.send('Database created...');
     });
 })
-app.get('/createTabel', (req, res) => {
+app.get('/createTable', (req, res) => {
     let sql = 'CREATE TABLE posts(id int AUTO_INCREMENT,Name VARCHAR(50),Sex VARCHAR(10), PRIMARY KEY (id))';
     db.query(sql, (err, result) => {
         if (err) throw err;
@@ -127,7 +128,79 @@ app.get('/createTabel', (req, res) => {
         res.send('posts table created...');
     });
 })
+app.get('/addRow1', (req, res) => {
+    let newRow = { Name: '阿鵬', Sex: 'M' };
+    let sql = 'INSERT INTO posts SET ?';
+    let query = db.query(sql, newRow, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.send('New data Row1 is inserted...');
+    })
+})
+app.get('/addRow2', (req, res) => {
+    let newRow = { Name: '小惠', Sex: 'F' };
+    let sql = 'INSERT INTO posts SET ?';
+    let query = db.query(sql, newRow, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.send('New data Row2 is inserted...');
+    })
+})
+//取所有的值，並將內容打印在ConsoleLine上，結果都會在Results裡面，設計的時候可從Resoult著手
+//Result的值會跟SQL語句有關，因為Result是SQL語句執行的結果，如果Result的值不是自己想要的
+//可以再確認看看是不是SQL語句有問題
+app.get('/getPostsAll', (req, res) => {
+    let sql = 'SELECT * FROM posts';
+    let query = db.query(sql, (err, results) => {
+        if (err) throw err;
+        for (let x of results) {
+            let Name = x.Name;
+            let Sex = x.Sex;
+            console.log(`Name:${Name},Sex:${Sex}`)
+        }
+        console.log(results);
+        res.send('All Data is showed on consoleLine...');
+    })
+})
+//取特定的Row
+app.get('/getPost/:id', (req, res) => {
+    let sql = `SELECT * FROM posts WHERE id =${req.params.id}`;
+    let query = db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.log(results);
+        res.send(`The ${req.params.id} is showed on consoleLine...`);
+    })
+})
+//Udata資料表中的某欄位內容
+app.get('/updatePostSex/:id', (req, res) => {
+    let newSex = 'F'
+    let sql = `UPDATE posts SET Sex = '${newSex}' WHERE id =${req.params.id}`;
+    let query = db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.log(results);
+        res.send(`The Sex for ${req.params.id} is Updated and Showed on consoleLine...`);
+    })
+})
+app.get('/updatePostName/:id', (req, res) => {
+    let newName = '惠鈞'
+    let sql = `UPDATE posts SET Name = '${newName}' WHERE id =${req.params.id}`;
+    let query = db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.log(results);
+        res.send(`The Name for ${req.params.id} is Updated and Showed on consoleLine...`);
+    })
+})
+//Delet資料表中符合條件的欄位
+app.get('/deletpost/:id', (req, res) => {
+    let sql = `delete from posts WHERE id = ${req.params.id};`;
+    let query = db.query(sql, (err, results) => {
+        if (err) throw err;
+        console.log(results);
+        res.send(`The id : ${req.params.id} form posts is deleted and Showed on consoleLine...`);
+    })
+})
 
+//關閉SQL連線
 //connection.destroy();
 // db.end(function (err) {
 //     if (err) {
